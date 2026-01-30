@@ -19,7 +19,7 @@ export default function CartPage() {
       <div className="text-center py-20">
         <h1 className="text-2xl font-bold">Empty Bucket</h1>
         <Link href="/" className="text-blue-500 underline mt-4 block">
-          Kembali Belanja
+          Back to Shopping
         </Link>
       </div>
     );
