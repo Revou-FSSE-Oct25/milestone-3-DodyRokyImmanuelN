@@ -1,68 +1,27 @@
-"use client";
-import { useEffect, useState } from "react";
 import { Product } from "@/types/product";
-import ProductCard from "@/components/ProductCard";
+import ProductList from "@/components/ProductList";
 
-export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+async function getProducts(): Promise<Product[]> {
+  // ISR: Revalidate setiap 60 detik
+  const res = await fetch("https://fakestoreapi.com/products", {
+    next: { revalidate: 60 },
+  });
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("https://fakestoreapi.com/products");
-        if (!res.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        const data: Product[] = await res.json();
-        setProducts(data);
-      } catch {
-        setError("Failed to load products. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (!res.ok) throw new Error("Gagal mengambil data");
+  return res.json();
+}
 
-    fetchProducts();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex h-60 items-center justify-center text-gray-500">
-        Loading products...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-60 items-center justify-center text-red-500">
-        {error}
-      </div>
-    );
-  }
+export default async function Home() {
+  const initialProducts = await getProducts();
 
   return (
-    <>
-      {/* Page Header */}
-      <section className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Discover Our Products
-        </h1>
-        <p className="mt-2 max-w-xl text-gray-600">
-          Carefully selected items with quality you can trust.
+    <div className="max-w-7xl mx-auto py-10 px-6">
+      <section className="mb-10 border-b-2 border-slate-100 pb-8">
+        <p className="mt-2 text-slate-500 font-medium uppercase text-[10px] tracking-[0.2em]">
+          Industrial Grade Quality
         </p>
       </section>
-
-      {/* Product Grid */}
-      <section>
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-    </>
+      <ProductList initialData={initialProducts} />
+    </div>
   );
 }

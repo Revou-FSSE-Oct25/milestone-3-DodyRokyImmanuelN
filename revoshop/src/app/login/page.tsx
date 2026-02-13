@@ -1,87 +1,79 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LockKeyhole } from "lucide-react";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("isAdmin", "true");
+    if (password === "admin123") {
+      document.cookie = "is_admin=true; path=/; max-age=86400; SameSite=Strict";
       router.push("/admin");
     } else {
-      setError("Invalid username or password. (Try: admin / admin123)");
+      setError("Password salah. Silakan coba lagi.");
     }
   };
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-xl border bg-white p-10 shadow-sm">
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-            Admin Login
-          </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Please sign in to manage your store
-          </p>
-        </div>
-
-        {error && (
-          <div className="rounded-md bg-red-50 p-3 text-center text-sm font-medium text-red-600">
-            {error}
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          <div className="space-y-4 rounded-md shadow-sm">
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Username
-              </label>
-              <input
-                id="username"
-                type="text"
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-black shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black sm:text-sm"
-                placeholder="admin"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4 selection:bg-zinc-900 selection:text-white">
+      <div className="w-full max-w-[400px]">
+        <form
+          onSubmit={handleLogin}
+          className="bg-white rounded-3xl border border-zinc-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-10 space-y-8"
+        >
+          {/* Header Section */}
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-zinc-900 text-white mb-2 shadow-xl shadow-zinc-200">
+              <LockKeyhole size={28} />
             </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
+            <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+              Admin Dashboard
+            </h1>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              input security key
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-zinc-400 ml-1">
+                Security Key
               </label>
               <input
-                id="password"
                 type="password"
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-black shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black sm:text-sm"
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
+                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50/50 px-5 py-3.5 text-zinc-900 placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-zinc-100 focus:border-zinc-900 focus:bg-white transition-all duration-300"
               />
             </div>
+
+            {error && (
+              <div className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-3 rounded-xl border border-red-100 animate-in fade-in slide-in-from-top-1">
+                <p className="text-xs font-medium">{error}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="group relative w-full overflow-hidden rounded-2xl bg-zinc-900 px-6 py-4 text-sm font-semibold text-white shadow-2xl transition-all duration-300 hover:bg-zinc-800 active:scale-[0.98]"
+            >
+              <span className="relative z-10">Masuk ke Dashboard</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-zinc-800 to-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
           </div>
 
-          <button
-            type="submit"
-            className="group relative flex w-full justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-          >
-            Sign in
-          </button>
+          {/* Footer Card */}
+          <p className="text-center text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-medium">
+            Secure Encryption Active
+          </p>
         </form>
       </div>
     </div>
