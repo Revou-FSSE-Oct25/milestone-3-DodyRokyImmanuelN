@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LockKeyhole } from "lucide-react";
+import Cookies from 'js-cookie';
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
@@ -11,10 +12,11 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === "admin123") {
-      document.cookie = "is_admin=true; path=/; max-age=86400; SameSite=Strict";
+      Cookies.set('is_admin','true',{expires:1, path: '/'});
       router.push("/admin");
-    } else {
-      setError("Password salah. Silakan coba lagi.");
+      router.refresh();
+    }else{
+      setError("Wrong password. Please Try Again !!!")
     }
   };
 

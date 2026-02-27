@@ -5,6 +5,7 @@ import { useProductStore } from "@/store/useProductStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Edit, Trash2, Plus, LogOut, Loader2, Package } from "lucide-react";
+import Cookies from "js-cookie";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -12,8 +13,8 @@ export default function AdminDashboard() {
     useProductStore();
 
   useEffect(() => {
-    const isAdmin = localStorage.getItem("isAdmin");
-    if (!isAdmin) {
+    const token = Cookies.get("token");
+    if (!token) {
       router.push("/login");
       return;
     }
